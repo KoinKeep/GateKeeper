@@ -16,7 +16,7 @@ An input like this:
 
 Creates outputs that look like this:
 ```
-Building lookahead data of size 15. If the size is large or there are many xpubs & scripts, this may take a long time.
+Building lookahead data of size 100. If the size is large or there are many xpubs & scripts, this may take a long time.
 Finished building lookahead data.
 
 Ver: 1, locktime: 614250, value: 1717586, fee: 282
