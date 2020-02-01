@@ -1,0 +1,3 @@
+[submodule "BitcoinSpoon"]
+	path = BitcoinSpoon
+	url = git@github.com:KoinKeep/BitcoinSpoon.git
