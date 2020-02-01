@@ -1,7 +1,7 @@
 # GateKeeper
 ### Dont trust, verify.
 
-GateKeeper is a tool for verifying withdrawal transasctions and more. It will verify that your Bitcoin wallet is not lying or stealing from you.
+GateKeeper is a tool for verifying withdrawal transactions and more. It will verify that your Bitcoin wallet is not lying or stealing from you.
 
 GateKeeper should be used:
 * After a withdrawal transaction is created.
