@@ -7,7 +7,7 @@ GateKeeper should be used:
 * After a withdrawal transaction is created.
 * Before a transaction is published.
 
-To ensure the transaction is not published, ensure your withdrawal transaction is created in an offline environment.
+To ensure the transaction is not published, make your withdrawal transaction in an offline environment.
 
 An input like this:
 ```
