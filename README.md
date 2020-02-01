@@ -1,5 +1,5 @@
 # GateKeeper
-Dont trust, verify.
+### Dont trust, verify.
 
 GateKeeper is a tool for verifying withdrawal transasctions and more. It will verify that your Bitcoin wallet is not lying or stealing from you.
 
