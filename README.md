@@ -55,7 +55,7 @@ Account balance adjustment is: +0.00132425.
 
 After confirming the transaction details are what you expect, it is then safe to publish the withdrawal transaction. If any warnings or errors are found, the output will tell you them and you should *not* publish the transaction until they are resolved.
 
-GateKeeper can also verify receiving addresses. A receiving address has its pubscript pulled and then an attempt is made to create the same receiving address derived from a provided xpub. The two addresses must match exactly or it will fail.
+GateKeeper can also verify receiving addresses. A receiving address has its pubscript pulled and then an attempt is made to create the same receiving address from a provided xpub. The two addresses must match exactly or it will fail.
 ```
 ./gatekeeper -a bc1q89xk0cuh5n2dfurs5ncaq6d699esunh8qqmvfu -xpub xpub6DDpUQbZNypFjfd5EGeGvJdDUmTFqK3x3LcVBRj3nc6zfcJfWo9JGvPeeA8fXpRg1QANtwRfjAVCKhpC4bWy3AeHxXfDYyKvM5r9DAjoaF6
 ```
