@@ -91,7 +91,7 @@ int main(int argc, char **argv)
             printf("First, register your xpub(s). These are saved along with other metadata in a directory\n");
             printf("specified by the -directory command.\n");
             printf("\n");
-            printf("After registring, use the -transaction and -address commands to verify them. Be sure to\n");
+            printf("After registering, use the -transaction and -address commands to verify them. Be sure to\n");
             printf("use the same -directory that you used when registering your xpub(s).\n");
             printf("\n");
             printf("A secondary feature is running as an SPV node to download funding transactions. Funding\n");
