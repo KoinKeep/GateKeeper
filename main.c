@@ -56,6 +56,7 @@ int main(int argc, char **argv)
     int xpubCount = -1;
     const char *xpubRemoveStr = NULL;
     int listxPubs = 0;
+    const char *scriptMultisigStr = NULL;
     const char *scriptVaultStr = NULL;
     const char *scriptNameStr = NULL;
     int listScripts = 0;
@@ -98,44 +99,45 @@ int main(int argc, char **argv)
             printf("\n");
             printf("Register xpub:\n");
             printf("\n");
-            printf("-xpub xpub661My...                  Parses and saves the supplied xpub\n");
-            printf("-xpubName myxPubName                Optionally name the imported xpub (default is a generated uuid)\n");
-            printf("-xpubRemove myxPubName              Removes a given xpub by name\n");
-            printf("-listxPubs                          Lists all registered xpubs\n");
+            printf("-xpub xpub661My...                     Parses and saves the supplied xpub\n");
+            printf("-xpubName myxPubName                   Optionally name the imported xpub (default is a generated uuid)\n");
+            printf("-xpubRemove myxPubName                 Removes a given xpub by name\n");
+            printf("-listxPubs                             Lists all registered xpubs\n");
             printf("\n");
             printf("Register multisig scripts:\n");
             printf("\n");
-            printf("-scriptVault xPubName1,xPubName2,.. Adds KoinKeep 'vault' style multisig script.\n");
-            printf("-scriptName myVaultName             Optionally name the registered script (default is a generated uuid)\n");
-            printf("-listScripts                        Lists all registered multisig scripts\n");
+            printf("-scriptMultisig xPubName1,xPubName2,.. Adds multisig script where n is 2/3rds of m, rounding down.\n");
+            printf("-scriptVault xPubName1,xPubName2,..    Adds KoinKeep 'vault' style multisig script.\n");
+            printf("-scriptName myVaultName                Optionally name the registered script (default is a generated uuid)\n");
+            printf("-listScripts                           Lists all registered multisig scripts\n");
             printf("\n");
             printf("Transaction and Address Parsing:\n");
             printf("\n");
-            printf("-transaction ABCDEF123              Parses transasction from hex value and analyzes\n");
-            printf("-tx                                 Shorthand for -transaction\n");
-            printf("-address bc1123445678               Parses receiving address and analyzes it\n");
-            printf("-a bc1123445678                     Shorthand for -address\n");
-            printf("-addFundingTransaction ABCDEF123    Parses transasction from hex value and saves it for reference\n");
-            printf("-aftx ABCDEF123                     Shorthand for -addFundingTransaction\n");
+            printf("-transaction ABCDEF123                 Parses transasction from hex value and analyzes\n");
+            printf("-tx                                    Shorthand for -transaction\n");
+            printf("-address bc1123445678                  Parses receiving address and analyzes it\n");
+            printf("-a bc1123445678                        Shorthand for -address\n");
+            printf("-addFundingTransaction ABCDEF123       Parses transasction from hex value and saves it for reference\n");
+            printf("-aftx ABCDEF123                        Shorthand for -addFundingTransaction\n");
             printf("\n");
             printf("Settings:\n");
             printf("\n");
-            printf("-testnet                            (default %d)\n", testnet);
-            printf("-quietMode 1                        (default %d) Options are 0 (loud), 1, 2, 3, 4 (quietest)\n", quietMode);
-            printf("-directory \"somePath\"               (default \"%s\")\n", directory);
-            printf("-lookAheadCount 100000              (default %d)\n", TransactionTrackerBloomaheadCount);
-            printf("-walletCreationTime 1580162685      (default timestamp of first time keyManager module is initialized)\n");
+            printf("-testnet                               (default %d)\n", testnet);
+            printf("-quietMode 1                           (default %d) Options are 0 (loud), 1, 2, 3, 4 (quietest)\n", quietMode);
+            printf("-directory \"somePath\"                  (default \"%s\")\n", directory);
+            printf("-lookAheadCount 100000                 (default %d)\n", TransactionTrackerBloomaheadCount);
+            printf("-walletCreationTime 1580162685         (default timestamp of first time keyManager module is initialized)\n");
             printf("\n");
             printf("Passing a transaction and not enabling node will change the default lookAheadCount to %d.\n", noNodeLookaheadDefault);
             printf("When scanning for funding transactions, be sure walletCreationTime is set to *before* the funding transaction time.\n");
             printf("\n");
             printf("Modules:\n");
             printf("\n");
-            printf("-basicStorage                       (default %d)\n", basicStorage);
-            printf("-keyManager                         (default %d)\n", keyManager);
-            printf("-database                           (default %d)\n", enableDatabase);
-            printf("-transactionTracker                 (default %d)\n", transactionTracker);
-            printf("-node                               (default %d)\n", node);
+            printf("-basicStorage                          (default %d)\n", basicStorage);
+            printf("-keyManager                            (default %d)\n", keyManager);
+            printf("-database                              (default %d)\n", enableDatabase);
+            printf("-transactionTracker                    (default %d)\n", transactionTracker);
+            printf("-node                                  (default %d)\n", node);
             printf("\n");
             printf("Enabling a module enables all dependent modules as well.\n");
 
@@ -188,6 +190,9 @@ int main(int argc, char **argv)
 
         else if(*argv == strstr(*argv, "-scriptVault"))
             scriptVaultStr = *++argv;
+
+        else if(*argv == strstr(*argv, "-scriptMultisig"))
+            scriptMultisigStr = *++argv;
 
         else if(*argv == strstr(*argv, "-scriptName"))
             scriptNameStr = *++argv;
@@ -286,7 +291,7 @@ int main(int argc, char **argv)
         transactionTracker = 1;
     }
 
-    if(xpubCount || listxPubs || scriptVaultStr || listScripts) {
+    if(xpubCount || listxPubs || scriptVaultStr || scriptMultisigStr || listScripts) {
 
         keyManager = 1;
     }
@@ -418,6 +423,50 @@ int main(int argc, char **argv)
         }
 
         printf("\n");
+    }
+
+    if(scriptMultisigStr) {
+
+        keysDidChange = 1;
+
+        Datas hdWallets = DatasNew();
+        Datas components = StringComponents(StringNew(scriptMultisigStr), ',');
+
+        FORDATAIN(name, components) {
+
+            Data hdWalletData = KMHdWalletFrom(&km, StringNew(name->bytes));
+
+            if(!hdWalletData.bytes) {
+
+                printf("Unable to find xpub named %s. You must first add it with the -xpub command.", name->bytes);
+                printf("\n");
+                return 1;
+            }
+
+            hdWallets = DatasAddCopy(hdWallets, hdWalletData);
+        }
+
+        String scriptName = StringNew(scriptNameStr ?: makeUuid().bytes);
+
+        if(DatasHasMatchingData(KMVaultNames(&km), scriptName)) {
+
+            printf("Already have a script named %s.\n", scriptName.bytes);
+            printf("\n");
+        }
+        else if(hdWallets.count < 1) {
+
+            printf("Invalid number of keys for vault script (need at least 1).\n");
+            printf("\n");
+
+            return 1;
+        }
+        else if(hdWallets.count){
+
+            KMAddMultisig(&km, hdWallets, scriptName);
+
+            printf("Added new multisig script named %s.\n", scriptName.bytes);
+            printf("\n");
+        }
     }
 
     if(scriptVaultStr) {
