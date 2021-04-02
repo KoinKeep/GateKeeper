@@ -53,6 +53,11 @@ int main(int argc, char **argv)
 
     const char *xpubStr[100] = {0};
     const char *xpubNameStr[100] = {0};
+    const char *xpubDeriveStr[100] = {0};
+    
+    memset(xpubNameStr, 0, 100);
+    memset(xpubDeriveStr, 0, 100);
+    
     int xpubCount = -1;
     const char *xpubRemoveStr = NULL;
     int listxPubs = 0;
@@ -102,6 +107,7 @@ int main(int argc, char **argv)
             printf("-xpub xpub661My...                     Parses and saves the supplied xpub\n");
             printf("-xpubName myxPubName                   Optionally name the imported xpub (default is a generated uuid)\n");
             printf("-xpubRemove myxPubName                 Removes a given xpub by name\n");
+            printf("-xpubDerive \"m/45'/0..\"                Derives the given xpub by derivation path before storage. Also outputs resulting xpub.\n");
             printf("-listxPubs                             Lists all registered xpubs\n");
             printf("\n");
             printf("Register multisig scripts:\n");
@@ -184,6 +190,9 @@ int main(int argc, char **argv)
 
         else if(*argv == strstr(*argv, "-xpubRemove"))
             xpubRemoveStr = *++argv;
+        
+        else if(*argv == strstr(*argv, "-xpubDerive"))
+            xpubDeriveStr[xpubCount] = *++argv;
 
         else if(*argv == strstr(*argv, "-listxPubs"))
             listxPubs = 1;
@@ -388,6 +397,13 @@ int main(int argc, char **argv)
 
         if(xpubNameStr[i])
             name = StringNew(xpubNameStr[i]);
+        
+        if(xpubDeriveStr[i]) {
+            
+            hdWalletData = hdWallet(hdWalletData, xpubDeriveStr[i]);
+            
+            printf("xpub[%d] derivation \"%s\" result: %s\n", i, xpubDeriveStr[i], base58Encode(hdWalletData).bytes);
+        }
 
         KMSetHDWalletForUUID(&km, hdWalletData, name, KeyManagerHdWalletTypeManual);
 
