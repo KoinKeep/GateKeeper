@@ -93,15 +93,15 @@ WARNING: Unable to verify withdrawal amount. This knowledge is required to verif
 Without this knowledge an attacker (or bug) may send an unknown amount of your funds to miners.
 Possible remedies are:
 1) Run again adding the -database parameter (if the funding transaction has been previously saved).
-2) Run again but adding parameters -node and -walletCreationTime 1579094852 where 1579094852 is the unix time of the funding transaction (or earlier). This will connect to the bitcoin network searching for the funding transaction(s), saving them, and quiting when found.
+2) Run again but adding parameters -node and -walletCreationTime 1579094852 where 1579094852 is the unix time of the funding transaction (or earlier). This will connect to the bitcoin network searching for the funding transaction(s), saving them, and quitting when found.
 3) Find the transaction and add it manually with -addFundingTransaction ABCD where ABCD is the transaction in hex. The transaction identifier is ca30c0244abe9a53b8d80c3ab90568d9ff8c360ce6235721ef39886229e9fee6.
-4) If you are an advanced user, you can lookup the funding transaciton amount manually. The output index is 1.
+4) If you are an advanced user, you can lookup the funding transaction amount manually. The output index is 1.
 
 Receiving address bc1qyu7zlf58t6fmgzh4pqtqt4gg7lmjd96wrmm6tc is confirmed as a valid and owned p2wpkh address.
 
 == Confirmed transaction details ==
 
-Withdrawing an unkown amount from the following address(es):
+Withdrawing an unknown amount from the following address(es):
 * WARNING: Unrenderable Amount WARNING: Unrenderable Address
 
 0.00119999 sent to unowned address(es):
